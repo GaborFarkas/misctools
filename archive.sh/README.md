@@ -51,3 +51,11 @@ In the relative path the first `/` is mandatory.
 - `UpdateMode`: Tell the script whether existing archives should be updated. It must be an `On` value. It can take gradually more time, but it makes a safe (non-destroying) update.
 
 Commented out lines (starting with a `#`) are not parsed by the script.
+
+##Manual invoke
+
+You can invoke the script manually any time by using the following command:
+
+``` bash
+sudo /etc/init.d/archive.sh stop
+```
