@@ -9,25 +9,18 @@ LSB Init Script compliant, thus it can be used with `update-rc.d`.
 ##Installation
 
 1. Copy the config file into `/etc/archive`.
-
 ``` bash
 sudo mkdir /etc/archive && cp archive.conf /etc/archive
 ```
-
 2. Copy to the script to `/etc/init.d`.
-
 ``` bash
 sudo cp archive.sh /etc/init.d
 ```
-
 3. Give the script run privilege.
-
 ``` bash
 sudo chmod +x /etc/init.d/archive.sh
 ```
-
-3. Run `update-rc.d` to activate the script.
-
+4. Run `update-rc.d` to activate the script.
 ``` bash
 sudo update-rc.d archive.sh defaults
 ```
@@ -35,13 +28,10 @@ sudo update-rc.d archive.sh defaults
 ##Uninstallation
 
 1. Deactivate the script with `update-rc.d`.
-
 ``` bash
 sudo update-rc.d -f archive.sh remove
 ```
-
 2. Optionally remove the script, and the configuration file.
-
 ``` bash
 sudo rm -r /etc/archive && rm /etc/init.d/archive.sh
 ```
