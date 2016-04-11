@@ -1,19 +1,19 @@
 #!/bin/bash
 ### BEGIN INIT INFO
-# Provides: archive
+# Provides: archive.sh
 # Required-Start: $local_fs $syslog
 # Required-Stop: $local_fs $syslog
-# Default-Start:    2 3 4 5
-# Default-Stop:     0
+# Default-Start: 2 3 4 5
+# Default-Stop: 0
 # Short-Description: Archives directories with their content at shutdown.
 ### END INIT INFO
 
-function stop {
+stop () {
 	CONFIG="/etc/archive/archive.conf"
 	UPDATEMODE=false
 	VERBOSE=false
 	
-	function isEmpty {
+	isEmpty () {
 		#Excluding every commented out line with an extended regex.
 		if [ $(grep -E "^[^#]*$1" $CONFIG | cut -f2 -d" ") == "$1" ]; then
 			echo "true"
@@ -108,9 +108,12 @@ function stop {
 }
 
 case "$1" in
-  stop)
-        stop
-        ;;
+    stop)
+	    stop
+	;;
+    *)
+	    echo "Usage: $0 stop" >&2
+	    exit 1
+	;;
 esac
-exit 0
 
