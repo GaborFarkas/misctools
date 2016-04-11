@@ -108,8 +108,12 @@ stop () {
 }
 
 case "$1" in
+    start)
+        exit 0
+    ;;
     stop)
 	    stop
+        exit 0
 	;;
     *)
 	    echo "Usage: $0 stop" >&2
