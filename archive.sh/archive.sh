@@ -8,6 +8,8 @@
 # Short-Description: Archives directories with their content at shutdown.
 ### END INIT INFO
 
+. /lib/lsb/init-functions
+
 stop () {
 	CONFIG="/etc/archive/archive.conf"
 	UPDATEMODE=false
@@ -36,13 +38,13 @@ stop () {
 		if mountpoint -q -- $TARGET; then
 			if [ $(mount | grep $TARGET | cut -f1 -d" ") != "$DISK" ]; then
 				echo "Archiving process is halted as MountPoint is already used by a different device."
-				exit 0
+				exit 1
 			fi
 		fi
 		mount "$DISK" "$TARGET" 2> /dev/null
 	else
 		echo "Archiving process is halted due to bad configuration."
-		exit 0
+		exit 1
 	fi
 	
 	#If archive disk is mounted as read only, remount it with proper permissions.
@@ -61,7 +63,7 @@ stop () {
 	
 	#Iterate through every map in the config file. Seperate the paths with AWK, as cut takes only a single char delimiter. Maybe using : as a delimiter
 	#would be better.
-	echo "Creating archives, please do not power off the computer."
+	echo "Creating archives."
 	for map in $(grep -E -- "^[^#]*->" $CONFIG); do
 		FROM=$(echo $map | awk 'BEGIN {FS = "->"}; {print $1}')
 		TO=$(echo $map | awk 'BEGIN {FS = "->"}; {print $2}')
@@ -105,6 +107,7 @@ stop () {
 	#For increased portability sync, and unmount.
 	sync
 	umount "$TARGET" 2> /dev/null
+    exit 0
 }
 
 case "$1" in
@@ -112,7 +115,9 @@ case "$1" in
         exit 0
     ;;
     stop)
+        log_daemon_msg "Creating archives"
 	    stop
+        log_end_msg $0
         exit 0
 	;;
     *)
