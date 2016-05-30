@@ -112,7 +112,6 @@ do_stop () {
 	sync
 	umount "$TARGET" 2> /dev/null
     rm /etc/archive/now
-    exit 0
 }
 
 case "$1" in
