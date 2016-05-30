@@ -10,10 +10,17 @@
 
 . /lib/lsb/init-functions
 
-stop () {
+do_start () {
+    if [ ! -e "/etc/archive/now" ]; then
+        echo $(date +%s) > "/etc/archive/now"
+    fi
+}
+
+do_stop () {
 	CONFIG="/etc/archive/archive.conf"
 	UPDATEMODE=false
 	VERBOSE=false
+    NOW=$(cat /etc/archive/now)
 	
 	isEmpty () {
 		#Excluding every commented out line with an extended regex.
@@ -77,10 +84,7 @@ stop () {
 				#If UpdateMode is On, check the archives if they need to be updated, and act accordingly.
 				#TODO: Check if we have enough space on the target device.
 				if [[ -e "$TARGET$TO/${dir%%/}.tar.gz" && $UPDATEMODE == true ]]; then
-					#Sync the output of tar -lv and ls -l, and diff them. ls -l: feed from find for absolute path -> format time stamp -> cut no. of links ->
-					#change "owner group" to "owner/group" -> remove pretty print whitespaces -> sort the list. tar -vf: remove directories (size mismatch) ->
-					#remove pretty print whitespaces -> sort the list.
-					if [[ $(diff <(find $dir -type f -exec ls -l --time-style="+%Y-%m-%d %H:%M" {} \; | cut -f1,3- -d" " | sed "s/ /\//2" | sed "s/ \+/ /g" | sort) <(tar -ztvf "$TARGET$TO/${dir%%/}.tar.gz" | grep -v "^d" | sed "s/ \+/ /g" | sort)) ]]; then
+					if [ $(date -d "$(ls -dl --time-style="+%Y-%m-%d %H:%M" $dir | cut -f6-7 -d" ")" +%s) -gt $NOW ]; then
 						#Store temp files in the shared memory tmpfs. Free memory in the end.
 						gzip -dkc "$TARGET$TO/${dir%%/}.tar.gz" > "/dev/shm/${dir%%/}.tar"
 						#If we do not have files in the archive, which are deleted in the FS, choose the easy way.
@@ -107,16 +111,18 @@ stop () {
 	#For increased portability sync, and unmount.
 	sync
 	umount "$TARGET" 2> /dev/null
+    rm /etc/archive/now
     exit 0
 }
 
 case "$1" in
     start)
+        do_start
         exit 0
     ;;
     stop)
         log_daemon_msg "Creating archives"
-	    stop
+	    do_stop
         log_end_msg $0
         exit 0
 	;;
@@ -125,4 +131,3 @@ case "$1" in
 	    exit 1
 	;;
 esac
-
