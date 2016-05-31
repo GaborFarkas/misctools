@@ -20,7 +20,7 @@ do_stop () {
 	CONFIG="/etc/archive/archive.conf"
 	UPDATEMODE=false
 	VERBOSE=false
-    NOW=$(cat /etc/archive/now)
+    #NOW=$(cat /etc/archive/now)
 	
 	isEmpty () {
 		#Excluding every commented out line with an extended regex.
@@ -84,7 +84,7 @@ do_stop () {
 				#If UpdateMode is On, check the archives if they need to be updated, and act accordingly.
 				#TODO: Check if we have enough space on the target device.
 				if [[ -e "$TARGET$TO/${dir%%/}.tar.gz" && $UPDATEMODE == true ]]; then
-					if [ $(date -d "$(ls -dl --time-style="+%Y-%m-%d %H:%M" $dir | cut -f6-7 -d" ")" +%s) -gt $NOW ]; then
+					if [ $(find $dir -type d -newer /etc/archive/now) ]; then
 						#Store temp files in the shared memory tmpfs. Free memory in the end.
 						gzip -dkc "$TARGET$TO/${dir%%/}.tar.gz" > "/dev/shm/${dir%%/}.tar"
 						#If we do not have files in the archive, which are deleted in the FS, choose the easy way.
