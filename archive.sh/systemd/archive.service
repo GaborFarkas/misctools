@@ -1,0 +1,11 @@
+[Unit]
+Description=Archiving script
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/usr/archive.sh/archive.sh start
+ExecStop=/usr/archive.sh/archive.sh stop
+
+[Install]
+WantedBy=multi-user.target
