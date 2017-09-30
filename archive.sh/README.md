@@ -6,7 +6,7 @@ It creates gzipped archives, and updates them if a change is detected.
 
 LSB Init Script compliant, thus it can be used with `update-rc.d`.
 
-##Installation
+## Installation
 
 1. Copy the config file into `/etc/archive`.
 ``` bash
@@ -25,7 +25,7 @@ sudo chmod +x /etc/init.d/archive.sh
 sudo update-rc.d archive.sh defaults
 ```
 
-##Uninstallation
+## Uninstallation
 
 1. Deactivate the script with `update-rc.d`.
 ``` bash
@@ -36,7 +36,7 @@ sudo update-rc.d -f archive.sh remove
 sudo rm -r /etc/archive && rm /etc/init.d/archive.sh
 ```
 
-##Configuration
+## Configuration
 
 Edit `activate.conf` to configure the script. It currently accepts the following parameters:
 
@@ -52,7 +52,7 @@ In the relative path the first `/` is mandatory.
 
 Commented out lines (starting with a `#`) are not parsed by the script.
 
-##Manual invoke
+## Manual invoke
 
 You can invoke the script manually any time by using the following command:
 
